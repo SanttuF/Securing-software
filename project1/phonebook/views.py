@@ -16,16 +16,15 @@ def deleteView(request, id):
     if request.method == 'POST':
         entry = get_object_or_404(PhoneNumber, id=id)
         
-        print(request.user.username)
         # Flaw 2: To fix, uncomment the two lines below
-        if request.user.username != entry.creator:
-            return redirect('/')
+        # if request.user.username != entry.creator:
+        #     return redirect('/')
         
         entry.delete()
     return redirect('/')
 
 # Flaw 1: To fix, uncomment the line below
-@login_required
+# @login_required
 def addView(request):
     if request.method == 'POST':
         creator = request.user.username
@@ -45,7 +44,10 @@ def createuserView(request):
         password = request.POST.get('password')
         try:
             User.objects.create_user(username=username, password=password)
-            validate_password(password)
+
+            # FLAW 4: Uncomment to fix
+            # validate_password(password)
+            
         except Exception as e:
             return render(request, 'phonebook/signup.html', {'error': e})
     return redirect('/')

@@ -10,6 +10,6 @@ urlpatterns = [
     path('signup', signupView, name='signup'),
     path('createuser', createuserView, name='createuser'),
     
-    # Flaw 3: To fix, remove or comment out the path below
+    # Flaw 3: Remove the path below to fix
     path('users', userView, name='user'),
 ]

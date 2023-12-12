@@ -1,0 +1,21 @@
+https://github.com/SanttuF/Securing-software/tree/master/project1
+
+FLAW 1:
+phonebook/views.py Line 27 
+https://github.com/SanttuF/Securing-software/blob/master/project1/phonebook/views.py#L27
+
+FLAW 2:
+phonebook/views.py Line 20
+https://github.com/SanttuF/Securing-software/blob/master/project1/phonebook/views.py#L20
+
+FLAW 3:
+phonebook/urls.py Line 13
+https://github.com/SanttuF/Securing-software/blob/master/project1/phonebook/urls.py#L13
+
+FLAW 4:
+app/setting.py Line 89
+https://github.com/SanttuF/Securing-software/blob/master/project1/app/settings.py#L89
+
+FLAW 5:
+phonebook/apps.py Line 8
+https://github.com/SanttuF/Securing-software/blob/master/project1/phonebook/apps.py#L8
