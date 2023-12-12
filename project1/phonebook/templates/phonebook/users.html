@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8">
+        <title>Users</title>
+    </head>
+
+    <body>
+        <ul>
+        {% for user in users %}
+            <li>{{user.id}} {{user.username}}   {{user.password}}</li>
+        {% endfor %}
+        </ul>
+    </body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="UTF-8">
+        <title>Phonebook</title>
+    </head>
+
+    <body>
+        <h1>Phonebook</h1>
+
+        <h2>Add contact</h2>
+        <form method="post" action="{% url 'add' %}" id="addForm">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="name" id="addName" /> <br/>
+            <input type="text" name="number" placeholder="number" id="addNumber" /> <br/>
+            <input type="submit" value="save"/>
+        </form>
+
+        <h2>Entries</h2>
+        <ul>
+            {% for entry in entries %}
+            <li>
+                {{ entry.name }} {{ entry.number }}
+                <form method="post" action="{% url 'delete' entry.id %}">
+                    {% csrf_token %}
+                    <button type="submit">delete</button>   
+                </form>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <script>
+            const user = '{{ user }}'
+            const addForm = document.getElementById('addForm')
+
+            addForm.addEventListener('submit', (event) => {
+                if (user == '') {
+                    event.preventDefault()
+                    alert('Log in required')
+                }
+            })
+        </script>
+    </body>
+</html>
