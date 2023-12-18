@@ -82,7 +82,7 @@ password. This doesn't ofcourse guarantee that the user makes a good password, b
 quides them towards it and eliminates the easiest, most vurnerable passwords.
 
 (The Identification and Authentication Failures part states many other security issues with
-authentication, like two factor authentication and secure password recovery. This site obiously
+authentication, like two factor authentication and secure password recovery. This site 
 won't have them and only flaw that will be fixed is the permitting of weak passwords.)
 
 Fix:
