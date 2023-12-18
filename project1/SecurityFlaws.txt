@@ -1,21 +1,112 @@
 https://github.com/SanttuF/Securing-software/tree/master/project1
 
+Flaws from the OWASP 2021 top ten list
+
 FLAW 1:
-phonebook/views.py Line 27 
-https://github.com/SanttuF/Securing-software/blob/master/project1/phonebook/views.py#L27
+https://github.com/SanttuF/Securing-software/blob/master/project1/phonebook/views.py#L26
+
+Description:
+A04 - Insecure Design
+The intented function of the website is to allow users logged in to add new phonenumbers 
+to the public phonebook. At the moment however, the users authentication status is only 
+checked through javascript running on the users browser. This is inherently flawed way 
+of confirming anything important, since this can easily be bypassed, for example by
+disabling javascript in the browser.
+
+Fix:
+To fix this, a check needs to be added to the server side to make sure the user has authenticated
+themselfs before accepting the entry they submitted. Since the website is using the djangos 
+authentication system already, can this vurnerability be easily fixed by adding a decorator 
+function provided by django, that makes sure that the user is logged in before the view is run.
+Even though the javascript doens't provide sufficient way of confirming the users credentials, 
+can it still be left there as a complementary part to info
+
 
 FLAW 2:
-phonebook/views.py Line 20
-https://github.com/SanttuF/Securing-software/blob/master/project1/phonebook/views.py#L20
+https://github.com/SanttuF/Securing-software/blob/master/project1/phonebook/views.py#L19
+
+Description:
+A01 - Broken Access Control
+The website provides the ability to remove users own entries from the list. This is done by 
+showing a delete button with the phonebook entries added by the logged in user. The button sends 
+a POST request to /delete/*id, where id is the id of the contact. The server then deletes entry 
+associated with the id. However, the server doesn't have any checks to make sure the request 
+sender is actually the creator of the phonebook contact they are trying to delete. This means 
+that, even tho others don't have the button to delete visible for them, can they delete any 
+entry from the phonebook directly by sending POST request to the API since it's missing the 
+access controls.
+
+Fix:
+The API provided by the server has to have a verification for the user sending the request.
+This is easily done by adding a check to the part handling the delete requests. The fix gets
+the request makers credentieals with help of the djangos authentication system, that the 
+website uses. Then those are simply compared to the phonebook entrys maker and if they are
+not same, no action is performed.
+
 
 FLAW 3:
-phonebook/urls.py Line 13
 https://github.com/SanttuF/Securing-software/blob/master/project1/phonebook/urls.py#L13
 
+Description:
+A05 - Security Misconfiguration 
+The website includes a site called /users, which is a list of all the users in the sites 
+database. it shows their id, username and the hashed password. These kind of sites might 
+be created to help developing the application. It shows easily and quickly all the created 
+users and can be used for example making sure the account creation works like intendet. What 
+ever the case may be, it should not be visible to everyone.
+
+(The site has other "flaws" that could fit under this category, like default admin password, 
+debug mode on that may leak the stack through error messages, and it uses sqlite as database, 
+which usually isn't recommended due to the lack of permission control. These are not counted 
+as flaws and are left there for the sake of convinience)
+
+Fix:
+There are multiple ways to fix this kind of vurnerability. If the site is needed, it can be 
+resticted to only site admins to use for example. This site has the djangos admin page, where 
+the same information can be found in more human friendly way. So this site can be removed 
+from the site completely. The easiest way to remove it is to remove the url path from the 
+url pattern list. The files responsible for the site can be also removed since they are not 
+used, but leaving them doesn't cause other harm but clutter the files a bit.
+
+
 FLAW 4:
-app/setting.py Line 89
-https://github.com/SanttuF/Securing-software/blob/master/project1/app/settings.py#L89
+https://github.com/SanttuF/Securing-software/blob/master/project1/phonebook/views.py#L54
+https://github.com/SanttuF/Securing-software/blob/master/project1/app/settings.py#L88
+
+Description:
+A07 - Identification and Authentication Failures
+There is a option to create a new user in the site. At the moment it doesn't have any limitations
+on the password and the user is allowed to create any password, including an empty one. It goes 
+without saying that this isn't very secure and there should be some restrictions in place for the 
+password. This doesn't ofcourse guarantee that the user makes a good password, but it 
+quides them towards it and eliminates the easiest, most vurnerable passwords.
+
+(The Identification and Authentication Failures part states many other security issues with
+authentication, like two factor authentication and secure password recovery. This site obiously
+won't have them and only flaw that will be fixed is the permitting of weak passwords.)
+
+Fix:
+Django provides a framework to make password validation way easier. The fix is going to utilize it.
+To start, the wanted validators neet to be defined it the settings of the app (/app/settings.py Line 88).
+It has predefined things like number included and a minimum length. The list has to be uncommented.
+Then to use them on the user creation, at the view responsible for handling the user creation 
+(/phonebook/views.py Line 54) add a django provided function, that runs the validators on the 
+string given to it.
+
 
 FLAW 5:
-phonebook/apps.py Line 8
 https://github.com/SanttuF/Securing-software/blob/master/project1/phonebook/apps.py#L8
+
+Description:
+A09 - Security Logging and Monitoring Failures
+Django has a decent logging system by default. It however doesn't log any authentication related
+events by default. This is usually considered really important, because it helps to track for example
+possible account hijack attacks. Currently the site doesn't record any login, or logout actions.
+
+Fix:
+This can be fixed by adding logging messages to login and logout events. Django gives decorators, 
+which can call the function they are assigned to on successfull and failed login attempts as well 
+as when user logs out. The site has file called signals (/phonebook/signals.py) that has these 
+eventhandlers made. It simply adds a date and username to the log when ever one of these three events 
+take place. These signals need to be included. To do this, in apps.py (/phonebook/apps.py) add 
+this file as a separate app to the website by simple uncommenting the two lines.

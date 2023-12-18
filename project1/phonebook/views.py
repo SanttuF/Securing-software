@@ -4,9 +4,9 @@ from django.contrib.auth.models import User
 from .models import PhoneNumber
 from django.contrib.auth.password_validation import validate_password
 
-def index(request, search=''):
+def index(request):
     try:
-        entries = PhoneNumber.objects.filter(name__icontains=search)
+        entries = PhoneNumber.objects.all()
     except:
         entries = []
     return render(request, 'phonebook/index.html', {"entries": entries, 'user': request.user.username})
@@ -32,6 +32,7 @@ def addView(request):
         number = request.POST.get('number')
 
         PhoneNumber.objects.create(creator=creator, name=name, number=number)
+
     return redirect('/')
 
 def signupView(request):
@@ -40,13 +41,20 @@ def signupView(request):
     
 def createuserView(request):
     if request.method == 'POST':
+
         username = request.POST.get('username')
         password = request.POST.get('password')
-        try:
-            User.objects.create_user(username=username, password=password)
 
+        existing = User.objects.filter(username=username).first()
+
+        if existing != None:
+            return render(request, 'phonebook/signup.html', {'error': 'username must be unique'})
+
+        try:
             # FLAW 4: Uncomment to fix
             # validate_password(password)
+
+            User.objects.create_user(username=username, password=password)
             
         except Exception as e:
             return render(request, 'phonebook/signup.html', {'error': e})

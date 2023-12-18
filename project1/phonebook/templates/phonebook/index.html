@@ -21,10 +21,12 @@
             {% for entry in entries %}
             <li>
                 {{ entry.name }} {{ entry.number }}
-                <form method="post" action="{% url 'delete' entry.id %}">
-                    {% csrf_token %}
-                    <button type="submit">delete</button>   
-                </form>
+                {% if entry.creator == user %}
+                    <form method="post" action="{% url 'delete' entry.id %}">
+                        {% csrf_token %}
+                        <button type="submit">delete</button>   
+                    </form>
+                {% endif %}
             </li>
             {% endfor %}
         </ul>

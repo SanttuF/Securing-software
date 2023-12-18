@@ -1,3 +1,5 @@
+# Flaw 5 fix
+
 import logging
 from django.contrib.auth.signals import user_logged_in, user_login_failed, user_logged_out
 from django.dispatch import receiver
@@ -10,7 +12,6 @@ def time():
 
 @receiver(user_logged_in)
 def login(sender, request, user, **kwargs):
-    logger.critical('abc')
     logger.info(f'[{time()}]User: {user.username} logged in')
 
 @receiver(user_logged_out)
@@ -19,4 +20,4 @@ def logout(sender, request, user, **kwargs):
 
 @receiver(user_login_failed)
 def login_failed(sender, credentials, request, **kwargs):
-    logger.info(f'[{time()}] User: {credentials} failed to log in')
+    logger.warning(f'[{time()}] User: {credentials} failed to log in')

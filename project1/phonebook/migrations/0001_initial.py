@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='PhoneNumber',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('creator', models.TextField(unique=True)),
+                ('creator', models.TextField()),
                 ('name', models.TextField()),
                 ('number', models.TextField()),
             ],
